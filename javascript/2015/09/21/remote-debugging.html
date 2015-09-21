@@ -13,7 +13,7 @@
   <link rel="canonical" href="http://gwatters.com/javascript/2015/09/21/remote-debugging.html">
   <link rel="alternate" type="application/rss+xml" title="Staying Up" href="http://gwatters.com/feed.xml" />
 
-  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
 </head>
 
 
@@ -165,11 +165,6 @@ your local network.</p>
 
     <span class="nx">addScript</span><span class="p">(</span><span class="s1">&#39;http://jsconsole.com/remote.js?&#39;</span> <span class="o">+</span> <span class="nx">debugKey</span><span class="p">,</span> <span class="s1">&#39;rDebugScript&#39;</span><span class="p">);</span>
 
-    <span class="nb">window</span><span class="p">.</span><span class="nx">__rdbg</span> <span class="o">=</span>
-    <span class="p">{</span>
-        <span class="c1">// USER: Put any Remote Debug functions that should be easily accessible here</span>
-    <span class="p">};</span>
-
     <span class="k">return</span> <span class="s1">&#39;Your remote debug session has started: &#39;</span> <span class="o">+</span> <span class="nx">debugKey</span><span class="p">;</span>
 <span class="p">};</span>
 
@@ -180,6 +175,7 @@ your local network.</p>
 <span class="kd">function</span> <span class="nx">addScript</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+
     <span class="nx">e</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span>
     <span class="nx">e</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">filename</span><span class="p">;</span>
 
@@ -188,7 +184,7 @@ your local network.</p>
         <span class="nx">e</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span> <span class="o">||</span> <span class="nx">error</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nx">readyStateCallback</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
     <span class="p">}</span>
