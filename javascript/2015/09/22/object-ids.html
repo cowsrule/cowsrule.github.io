@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Welcome!</title>
-  <meta name="description" content="Stay up with me to learn and explore.">
+  <title>Object IDs</title>
+  <meta name="description" content="There are plenty of times where you have an object and would like to uniquely identify it, either to aid in debugging or to use the Unique ID (UID) as a look...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://gwatters.com/update/2015/09/19/welcome.html">
+  <link rel="canonical" href="http://gwatters.com/javascript/2015/09/22/object-ids.html">
   <link rel="alternate" type="application/rss+xml" title="Staying Up" href="http://gwatters.com/feed.xml" />
 
   <link rel="shortcut icon" href="/favicon.ico">
@@ -59,12 +59,49 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Welcome!</h1>
-    <p class="post-meta">Sep 19, 2015</p>
+    <h1 class="post-title">Object IDs</h1>
+    <p class="post-meta">Sep 22, 2015</p>
   </header>
 
   <article class="post-content">
-    <p>Stay up with me to learn and explore.</p>
+    <p>There are plenty of times where you have an object and would like to uniquely identify it, either to aid in debugging or to use the Unique ID (UID) as a lookup key. While extending built-in types is generally not a good idea, doing so to aid development and debugging is a worthwhile exception.</p>
+
+<h4 id="why-is-this-useful">Why is this useful?</h4>
+<p>Occasionally while debugging you want to uniquely identify objects either for purposes of ensuring that you are looking at the same object at multiple point in your data flow, or using the objects’ UID to trigger a tracepoint (A breakpoint with a conditional - in this case a conditional on the object ID). Tracepoints are particularly useful when you are iterating over a large number of objects while only a specific one of them is causing an issue.</p>
+
+<h4 id="explanation">Explanation</h4>
+<p>Giving all objects a UID is easily done by taking advantage of the Object.defineProperty function (read more about it <a href="http://TODO">here</a>). By defining new properties on Object.prototype, you guarantee that every object created will have a valid ID that is created on demand.</p>
+
+<h4 id="source-code">Source Code</h4>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">uniqueID</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Counter that provides a unique ID for each object. Incremented on demand.</span>
+    <span class="kd">var</span> <span class="nx">nextUniqueId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="c1">// Non-visible and non-iterable property for an object that stores the UID</span>
+    <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="s1">&#39;__uniqueID&#39;</span><span class="p">,</span>
+    <span class="p">{</span>
+        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="p">});</span>
+
+    <span class="c1">// Non-writable accessor for an objects UID. Will generate and assign the UID</span>
+    <span class="c1">// on demand.</span>
+    <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="s1">&#39;uniqueID&#39;</span><span class="p">,</span>
+    <span class="p">{</span>
+        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="c1">// Only ever generate and assign a single UID for an object</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__uniqueID</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">__uniqueID</span> <span class="o">=</span> <span class="o">++</span><span class="nx">nextUniqueId</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">__uniqueID</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span></code></pre></div>
+
 
   </article>
 
